@@ -77,6 +77,7 @@ const main = function main(env) {
 		if (err) throw err;
 		files.forEach((data) => {
 			let artMd = makerOut("./articles/" + data);
+			console.log(artMd.intr);
 			let artHtml = marked(artMd.intr);
 			//console.log(artMd);
 			console.log(artHtml);

@@ -74,6 +74,7 @@ var main = function main(env) {
 		if (err) throw err;
 		files.forEach(function (data) {
 			var artMd = makerOut("./articles/" + data);
+			console.log(artMd.intr);
 			var artHtml = (0, _marked2.default)(artMd.intr);
 			//console.log(artMd);
 			console.log(artHtml);
