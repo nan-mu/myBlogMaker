@@ -1,18 +1,14 @@
 import {
 	compileFile
 } from "swig";
-import {
-	Renderer,
-	setOptions,
-	marked
-} from "marked";
+import marked from "marked"
 import {
 	readFile,
 	readdir
 } from "fs";
 
 let rendererMD = new Renderer();
-setOptions({ //makedown渲染引擎的默认配置
+marked.setOptions({ //makedown渲染引擎的默认配置
 	renderer: rendererMD,
 	gfm: true,
 	tables: true,
@@ -23,7 +19,7 @@ setOptions({ //makedown渲染引擎的默认配置
 	smartypants: false
 });
 
-class ArtMd {
+class Art {
 	constructor(context, intr, title, date, tags, mathjax, owncss, categories, urlname) {
 		this.context = context;
 		this.intr = intr;
@@ -59,7 +55,7 @@ const makerOut = (path) => {
 		config = JSON.parse("{" + config + "}"); //将预设改为json
 		config.tags = config.tags ? String(config.tags).substring(1, String(config.tags).length - 1).split(",") : undefined; //将tags的格式改为array, 这里要注意识别undefined
 		console.log(config);
-		return new ArtMd(
+		let temp = new Art(
 			String(data).replace(/---(\r\n|\n|.)*---/, " ").split("<!-- more -->"),
 			intr,
 			config.title,
@@ -70,17 +66,20 @@ const makerOut = (path) => {
 			config.categories,
 			config.urlname
 		);
+		console.log(temp);
+		return temp;
 	});
 }
 
-const main = function main(env){
+const main = function main(env) {
 	//console.log(env);
 	readdir("./articles", (err, files) => {
 		if (err) throw err;
 		files.forEach((data) => {
 			let artMd = makerOut("./articles/" + data);
-			console.log(artMd);
-			//console.log(artHtml);
+			let artHtml = marked(artMd.intr);
+			//console.log(artMd);
+			console.log(artHtml);
 		});
 	}); //扫描需要转换的文章
 }

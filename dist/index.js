@@ -4,12 +4,16 @@ var _swig = require("swig");
 
 var _marked = require("marked");
 
+var _marked2 = _interopRequireDefault(_marked);
+
 var _fs = require("fs");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var rendererMD = new _marked.Renderer();
-(0, _marked.setOptions)({ //makedown渲染引擎的默认配置
+var rendererMD = new Renderer();
+_marked2.default.setOptions({ //makedown渲染引擎的默认配置
 	renderer: rendererMD,
 	gfm: true,
 	tables: true,
@@ -20,8 +24,8 @@ var rendererMD = new _marked.Renderer();
 	smartypants: false
 });
 
-var ArtMd = function ArtMd(context, intr, title, date, tags, mathjax, owncss, categories, urlname) {
-	_classCallCheck(this, ArtMd);
+var Art = function Art(context, intr, title, date, tags, mathjax, owncss, categories, urlname) {
+	_classCallCheck(this, Art);
 
 	this.context = context;
 	this.intr = intr;
@@ -58,7 +62,9 @@ var makerOut = function makerOut(path) {
 		config = JSON.parse("{" + config + "}"); //将预设改为json
 		config.tags = config.tags ? String(config.tags).substring(1, String(config.tags).length - 1).split(",") : undefined; //将tags的格式改为array, 这里要注意识别undefined
 		console.log(config);
-		return new ArtMd(String(data).replace(/---(\r\n|\n|.)*---/, " ").split("<!-- more -->"), intr, config.title, config.date, config.tags, config.mathjax, config.owncss, config.categories, config.urlname);
+		var temp = new Art(String(data).replace(/---(\r\n|\n|.)*---/, " ").split("<!-- more -->"), intr, config.title, config.date, config.tags, config.mathjax, config.owncss, config.categories, config.urlname);
+		console.log(temp);
+		return temp;
 	});
 };
 
@@ -68,8 +74,9 @@ var main = function main(env) {
 		if (err) throw err;
 		files.forEach(function (data) {
 			var artMd = makerOut("./articles/" + data);
-			console.log(artMd);
-			//console.log(artHtml);
+			var artHtml = (0, _marked2.default)(artMd.intr);
+			//console.log(artMd);
+			console.log(artHtml);
 		});
 	}); //扫描需要转换的文章
 };
